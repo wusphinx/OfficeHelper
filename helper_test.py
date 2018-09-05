@@ -10,7 +10,10 @@ class TestXlsHelper(unittest.TestCase):
         with self.assertRaises(SuffixError) as cm:
             XlsHelper("ok").check_file_suffix()
     def test_write(self):
-        field_name_list, data_list = ['f1', "f2"], [[1,'row1'], ['row2']]
+        data_list = []
+        for i in range(65536*2):
+            data_list.append([1,'row%d'%(i+1)])
+        field_name_list = ['f1', "人生苦短，我用python"]
         XlsHelper("./test1.xls").write(field_name_list, data_list)
 
 if __name__ == '__main__':

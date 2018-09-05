@@ -10,6 +10,7 @@ class SuffixError(Exception):
 
 class XlsHelper(object):
     XLS_SUFFIX = ['xls', 'xlsx']
+    MAX_ROW = 65536
 
     def __init__(self, file_path):
         self.file_path = file_path
@@ -22,18 +23,20 @@ class XlsHelper(object):
             raise SuffixError("xls")
 
     def write(self, field_name_list, data_list):
-        assert len(field_name_list)>0 and len(data_list) == len(field_name_list) 
-        
+        assert len(field_name_list)>0 and len(data_list) >0 
+
         wbk = xlwt.Workbook()
-        sheet = wbk.add_sheet('sheet 1')
-        for index, item in enumerate(field_name_list):
-            sheet.write(0, index, item)
-        
-        row_num = 1
-        for row_data in data_list:
-            assert len(row_data) <= len(field_name_list)
-            for col_num, item in enumerate(row_data):
-                sheet.write(row_num, col_num, item)
-            row_num += 1
+        step = self.MAX_ROW-1
+        for i in range(0,len(data_list), step):
+            sheet_name = 'sheet %d'%(i/step + 1)
+            sheet = wbk.add_sheet(sheet_name)
+
+            for index, item in enumerate(field_name_list):
+                sheet.write(0, index, item)
+            
+            for index, row_data in enumerate(data_list[i:i+step]):
+                assert len(row_data) <= len(field_name_list)
+                for col_num, item in enumerate(row_data):
+                    sheet.write(index+1, col_num, item)
         wbk.save(self.file_path)
 
