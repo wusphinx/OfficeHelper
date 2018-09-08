@@ -12,14 +12,14 @@ class TestXlsHelper(unittest.TestCase):
         with self.assertRaises(SuffixError) as cm:
             XlsHelper("ok").check_file_suffix()
 
-    def test_write(self):
+    def test_a_write(self):
         data_list = []
         for i in range(65536*2):
             data_list.append([1,'row%d'%(i+1)])
         field_name_list = ['f1', "人生苦短，我用python"]
         XlsHelper(self.file_path ).write(field_name_list, data_list)
 
-    def test_read(self):
+    def test_b_read(self):
         with self.assertRaises(AssertionError) as cm:
             XlsHelper(self.file_path ).read(0, 0, 100, 0, 10)
 
